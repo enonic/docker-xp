@@ -1,10 +1,9 @@
-# Trigger build
 # Base image
 FROM openjdk:11-jdk
 
 MAINTAINER Jørgen Sivesind (jsi@enonic.com)
 
-ENV XP_DISTRO_VERSION 7.0.0-SNAPSHOT
+ENV XP_DISTRO_VERSION 7.0.0-A3
 ENV XP_ROOT /enonic-xp
 ENV XP_HOME /enonic-xp/home
 ENV XP_USER enonic-xp
