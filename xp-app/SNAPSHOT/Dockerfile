@@ -17,11 +17,11 @@ RUN echo "export XP_USER=$XP_USER" >> /etc/environment
 RUN echo "export XP_UID=$XP_UID" >> /etc/environment
 
 # Extracting Enonic xp
-RUN wget -O /tmp/distro-$XP_DISTRO_VERSION.zip http://repo.enonic.com/public/com/enonic/xp/distro/$XP_DISTRO_VERSION/distro-$XP_DISTRO_VERSION.zip
-RUN cd /tmp ; unzip distro-$XP_DISTRO_VERSION.zip
-RUN mv /tmp/enonic-xp-$XP_DISTRO_VERSION/home /tmp/enonic-xp-$XP_DISTRO_VERSION/home.org
+RUN wget -O /tmp/enonic-xp-generic-$XP_DISTRO_VERSION.zip http://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$XP_DISTRO_VERSION/enonic-xp-generic-$XP_DISTRO_VERSION.zip
+RUN cd /tmp ; unzip enonic-xp-generic-$XP_DISTRO_VERSION.zip
+RUN mv /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/home /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/home.org
 RUN mkdir -p $XP_ROOT
-RUN cp -rf /tmp/enonic-xp-$XP_DISTRO_VERSION/* $XP_ROOT/.
+RUN cp -rf /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/* $XP_ROOT/.
 
 # Adding Enonic xp user
 RUN adduser --home $XP_ROOT --gecos "" --no-create-home --UID $XP_UID --disabled-password $XP_USER
