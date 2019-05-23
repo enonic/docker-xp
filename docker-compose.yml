@@ -1,0 +1,17 @@
+version: '3'
+services:
+  exp:
+    build: .
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - repo:/enonic-xp/home/repo
+      - work:/enonic-xp/home/work
+      - snapshots:/enonic-xp/home/snapshots
+    labels:
+      io.enonic.backup.prescripts: "/usr/local/bin/backup.sh"
+volumes:
+  repo:
+  work:
+  snapshots:

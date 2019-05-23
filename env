@@ -1,0 +1,12 @@
+#!/bin/bash
+export IMAGE_NAME=enonic/xp
+export IMAGE_TAG=7.0.0-ubuntu
+
+#Remove gcr.io but not variable to push to Docker Hub
+#Will create a more elegant solution
+
+
+export DOCKER_REGISTRY=
+#export DOCKER_REGISTRY=gcr.io
+#export GCR_PROJECT=public-resources-235813
+
