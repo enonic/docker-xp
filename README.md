@@ -8,6 +8,11 @@ After setting env, use:
 ./push-to-registry.sh 
 ```
 
+You need to be authorized to push to a remote repo
+For GCR.io you need to use `gcloud` tool from Google and connect to the project
+If you want to use Docker hub you need to use 
+`docker login` with your credentials.
+
 # Files 
 * Dockerfile is the XP image recipe
 * Launcher.sh is needed for the Dockerfile
