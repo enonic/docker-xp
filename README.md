@@ -20,3 +20,6 @@ If you want to use Docker hub you need to use
 * * docker-compose build && docker-compose up -d
 * env is used to set remote docker image registry and image name:tags
 * ./push-to-registry.sh is a script used to publish files to a repo
+
+## Thanks
+To @runarmyklebust for yelling at me about not having any checks in code.
