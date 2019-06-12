@@ -22,6 +22,7 @@ RUN cd /tmp ; unzip enonic-xp-generic-$XP_DISTRO_VERSION.zip
 RUN mv /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/home /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/home.org
 RUN mkdir -p $XP_ROOT
 RUN cp -rf /tmp/enonic-xp-generic-$XP_DISTRO_VERSION/* $XP_ROOT/.
+RUN alias ll="ls -alF"
 
 # Adding Enonic xp user
 RUN adduser --home $XP_ROOT --gecos "" --no-create-home --UID $XP_UID --disabled-password $XP_USER
