@@ -23,8 +23,8 @@ echo "Tag $IMAGE_NAME for publishing
 #
 # docker login --username=yourhubusername --email=youremail@enonic.com
 #
-if [[ -z "$REGISTRY" ]]; then
-  echo "Empty $REGISTRY, using Docker Hub as registry"
+if [[ -z "$DOCKER_REGISTRY" ]]; then
+  echo "Empty $DOCKER_REGISTRY, using Docker Hub as registry"
   docker tag $IMAGE_NAME $IMAGE_NAME:$IMAGE_TAG
   docker push enonic/xp:$IMAGE_TAG
 else

@@ -22,4 +22,4 @@ If you want to use Docker hub you need to use
 * ./push-to-registry.sh is a script used to publish files to a repo
 
 ## Thanks
-To @runarmyklebust for yelling at me about not having any checks in code.
+github.com/runarmyklebust for yelling at me about not having any checks in code.
