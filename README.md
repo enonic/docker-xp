@@ -1,25 +1,28 @@
 # Official image for Enonic XP
 
 # Usage
-Set environments in `env` file
 
-After setting env, use:
-```
+Set environments in `.env` file. After setting `.env`, use:
+
+```bash
 ./push-to-registry.sh 
 ```
 
-You need to be authorized to push to a remote repo
-For GCR.io you need to use `gcloud` tool from Google and connect to the project
-If you want to use Docker hub you need to use 
-`docker login` with your credentials.
+You need to be authorized to push to a remote repo:
+* For GCR.io you need to use `gcloud` tool from Google and connect to the project
+* For Docker hub you need to use `docker login` with your credentials
 
-# Files 
-* Dockerfile is the XP image recipe
-* Launcher.sh is needed for the Dockerfile
-* docker-compose.yaml can be used for local image testing
-* * docker-compose build && docker-compose up -d
-* env is used to set remote docker image registry and image name:tags
-* ./push-to-registry.sh is a script used to publish files to a repo
+# Files
 
-## Thanks
-github.com/runarmyklebust for yelling at me about not having any checks in code.
+* `Dockerfile` is the XP image recipe
+* `bin/*` contains scripts needed for the Dockerfile
+* `docker-compose.yml` can be used for local image testing
+* * `docker-compose --compatibility up --force-recreate --build`
+* * Su pass is `pass`
+* `.env` is used to set remote docker image registry and image name:tags
+* `./push-to-registry.sh` is a script used to publish files to a repo
+
+## References
+
+* https://github.com/elastic/elasticsearch/tree/master/distribution/docker/src/docker
+* https://access.redhat.com/documentation/en-us/openshift_container_platform/3.10/html/creating_images/creating-images-guidelines
