@@ -21,8 +21,3 @@ You need to be authorized to push to a remote repo:
 * * Su pass is `pass`
 * `.env` is used to set remote docker image registry and image name:tags
 * `./push-to-registry.sh` is a script used to publish files to a repo
-
-## References
-
-* https://github.com/elastic/elasticsearch/tree/master/distribution/docker/src/docker
-* https://access.redhat.com/documentation/en-us/openshift_container_platform/3.10/html/creating_images/creating-images-guidelines
