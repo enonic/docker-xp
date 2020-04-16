@@ -5,7 +5,7 @@ LABEL creator="Diego Pasten (dap@enonic.com)"
 
 USER root
 
-ENV XP_DISTRO_VERSION="7.2.3-RC1" \
+ENV XP_DISTRO_VERSION="7.2.3-RC2" \
     XP_ROOT="/enonic-xp" \
     XP_HOME="/enonic-xp/home" \
     XP_USER="enonic-xp" \
