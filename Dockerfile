@@ -23,7 +23,7 @@ RUN \
 RUN \
   wget -q $DISTRO_URL && \
   unzip -qq enonic-xp-generic-$DISTRO_VERSION.zip && \
-  mv enonic-xp-generic-$DISTRO_VERSION ${DISTRO_FOLDER}
+  mv $(find . -maxdepth 1 -type d -name 'enonic-xp-generic-*') ${DISTRO_FOLDER}
 
 # Create standard folders so docker will preserve
 # folder permissions when mounting named volumes
