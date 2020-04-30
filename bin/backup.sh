@@ -9,5 +9,14 @@
 # Example:
 #  backup.sh
 
-echo "Found the following snapshots:"
-eval find $XP_HOME/snapshots/ -maxdepth 1 -cmin -${XP_SNAPSHOT_MAX_AGE:-1440} -iname 'snap*' -type f | egrep '.*'
+AGE=${XP_SNAPSHOT_MAX_AGE:-1440}
+
+echo "Searching for snapshots with max age of $AGE hours ..."
+find $XP_HOME/snapshots/ -maxdepth 1 -cmin -${AGE} -iname 'snap*' -type f | egrep '.*'
+
+if [ "$?" == "0" ]; then
+    echo "Success!"
+else
+    echo "Failure! No snapshots with max age of $AGE hours found!"
+    exit 1
+fi
