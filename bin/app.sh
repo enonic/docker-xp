@@ -102,7 +102,7 @@ add () {
         echo -n "forcing ... "
     fi
 
-    fail=$(curl --silent --show-error --fail $JAR -o /tmp/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
+    fail=$(curl -L --silent --show-error --fail $JAR -o /tmp/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
     fail=$(cp -f /tmp/$NAME $DEPLOY_DIR/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
     echo "success!"
 }
