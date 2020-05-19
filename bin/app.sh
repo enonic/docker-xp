@@ -1,46 +1,121 @@
 #!/bin/bash
 
-# Is to add/remove jars from XP deploy folder.
+# Script to add/remove jars from XP deploy folder.
 #
 # Example:
-#  app.sh OP URL [NAME]
+#  app.sh OP URL [OPTIONS]
 #  app.sh add https://repo.enonic.com/public/com/enonic/app/alive/2.0.0/alive-2.0.0.jar
 #  app.sh remove https://repo.enonic.com/public/com/enonic/app/alive/2.0.0/alive-2.0.0.jar
-#  app.sh add https://repo.enonic.com/public/com/enonic/app/alive/2.0.0/alive-2.0.0.jar alive.jar
+#  app.sh add https://repo.enonic.com/public/com/enonic/app/alive/2.0.0/alive-2.0.0.jar --name=alive.jar --force
 #  app.sh remove alive.jar
 
-set -e
+set -e # Exit immediately on error
 
 DEPLOY_DIR=$XP_HOME/deploy
 
-app_name () {
-    name=""
-    if [ "$2" != "" ]
-    then
-        name="$2"
-    else
-        name=$(echo "$1" | tr "/" "\n" | tail -n 1)
-    fi
-    if [[ "$name" =~ ^.*\.jar$ ]]; then
-        echo $name
-    else
-        echo "App name has to end with '.jar'" >>/dev/stderr
-        exit 111
-    fi
+OP=""
+JAR=""
+NAME=""
+FORCE="0"
+
+usage() {
+    echo "Usage: /app.sh [OP] [URL] [OPTIONS]"
+    echo "Add/Remove app in the local deploy folder"
+    echo ""
+    echo "Options:"
+    echo -e "\t-h, --help    Display this dialog"
+    echo -e "\t--name=[name] Override app filename"
+    echo -e "\t--force       Reinstall app even though its present"
 }
 
+error() {
+    echo "$@"
+    echo "Run /app.sh -h for more info"
+    exit 1
+}
+
+# Parse parameters
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    VALUE=`echo $1 | awk -F= '{print $2}'`
+    case $PARAM in
+        -h | --help)
+            usage
+            exit
+            ;;
+        --name)
+            NAME="$VALUE"
+            ;;
+        --force)
+            FORCE="1"
+            ;;
+        *)
+            if [ "$OP" == "" ]; then
+                OP=$PARAM
+            elif [ "$JAR" == "" ]; then
+                JAR=$PARAM
+            else
+                usage
+                exit 1
+            fi
+            ;;
+    esac
+    shift
+done
+
+# Check required parameters
+if [ "$OP" == "" ] || [ "$JAR" == "" ]; then
+    error "Missing OP or JAR"
+    exit 1
+fi
+
+# Check OP
+case $OP in
+    add)
+        ;;
+    remove)
+        ;;
+    *)
+        error "OP must be add or remove"
+        ;;
+esac
+
+# Setup name
+if [ "$NAME" == "" ]; then
+    NAME=$(echo "$JAR" | tr "/" "\n" | tail -n 1)
+fi
+
+# Check name
+if [[ ! "$NAME" =~ ^.*\.jar$ ]]; then
+    echo ""
+    error "NAME must end with .jar, got name $NAME"
+fi
+
 add () {
-    name=$(app_name $@)
-    echo -n "Adding $name ... "
-    fail=$(curl --silent --show-error --fail $1 -o $DEPLOY_DIR/$name 2>&1) || (echo -n "failed! "; echo "$fail"; exit 111)
+    echo -n "Adding $NAME ... "
+    if [ -f $DEPLOY_DIR/$NAME ] && [ "$FORCE" == "0" ]; then
+        echo "skipped! Already exists!"
+        exit
+    fi
+
+    if [ "$FORCE" == "1" ]; then
+        echo -n "forcing ... "
+    fi
+
+    fail=$(curl --silent --show-error --fail $JAR -o /tmp/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
+    fail=$(cp -f /tmp/$NAME $DEPLOY_DIR/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
     echo "success!"
 }
 
 remove () {
-    name=$(app_name $@)
-    echo -n "Removing $name ... "
-    fail=$(rm $DEPLOY_DIR/$name 2>&1) || (echo -n "failed! "; echo "$fail"; exit 111)
+    echo -n "Removing $NAME ... "
+    if [ ! -f $DEPLOY_DIR/$NAME ]; then
+        echo "skipped! Not found!"
+        exit
+    fi
+    fail=$(rm $DEPLOY_DIR/$NAME 2>&1) || (echo -n "failed! "; echo "$fail"; exit 1)
     echo "success!"
 }
 
-$@
+# Run OP
+$OP
