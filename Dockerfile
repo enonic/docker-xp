@@ -50,6 +50,10 @@ RUN \
   chgrp -R 0 ${BIN_FOLDER} && \
   chmod -R g=u ${BIN_FOLDER}
 
+# Add the standard bash profile to XP ROOT
+RUN \
+  cp -R /etc/skel/. ${DISTRO_FOLDER}/
+
 ################################################################################
 # Build stage 1 (the actual XP image):
 ################################################################################
