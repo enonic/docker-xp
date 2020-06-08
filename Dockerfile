@@ -111,7 +111,13 @@ RUN \
   adduser --home $XP_ROOT --gecos "" --no-create-home --UID $XP_UID --gid 0 --disabled-password $XP_USER && \
   # UID running the container could be generated dynamically by Openstack.
   # Allow entrypoint to create associated entry in /etc/passwd.
-  chmod g=u /etc/passwd
+  chmod g=u /etc/passwd && \
+  # Install required packages
+  apt-get -qq update && \
+  apt-get -qq install -y \
+    dnsutils \
+  # Cleanup after apt-get
+  && rm -rf /var/lib/apt/lists/*
 
 # Copy in XP and scripts
 COPY --from=builder --chown=$XP_UID:0 /tmp/server $XP_ROOT
