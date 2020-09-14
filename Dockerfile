@@ -127,7 +127,7 @@ COPY --from=builder --chown=$XP_UID:0 /tmp/bin /usr/local/bin
 WORKDIR $XP_HOME
 
 # Ports
-EXPOSE 2609 4848 8080 9200 9300
+EXPOSE 2609 4848 5701 8080 9200 9300
 
 # Set entrypoint and command
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
