@@ -31,21 +31,21 @@ jobs:
       - name: Test env variable
         run: echo "XP_VERSION = ${{ env.XP_VERSION }}"
 
-      # If snapshot version, don't execute this Action
-      - name: Exit on snapshot build
-        if: contains( env.XP_VERSION, '-SNAPSHOT')
-        run: exit 1
+#      # If snapshot version, don't execute this Action
+#      - name: Exit on snapshot build
+#        if: contains( env.XP_VERSION, '-SNAPSHOT')
+#        run: exit 1
 
       # Runs a single command using the runners shell
       - name: Test .env
         run: echo "Building $IMAGE_FULL_TAG ..."
 
       - name: Docker Build
-        run: docker build $DOCKER_BUILD_EXTRA_ARGS \
-          --build-arg build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-          --build-arg build_base_image=$BASE_IMAGE \
-          --build-arg build_distro_version=$XP_VERSION \
-          -t $IMAGE_FULL_TAG \
+        run: docker build ${{ env.DOCKER_BUILD_EXTRA_ARGS }} \
+          --build-arg build_date=${{ (date -u +'%Y-%m-%dT%H:%M:%SZ') }} \
+          --build-arg build_base_image=${{ env.BASE_IMAGE }} \
+          --build-arg build_distro_version=${{ env.XP_VERSION }} \
+          -t ${{ env.IMAGE_FULL_TAG }} \
           .
 
           #      # Runs a set of commands using the runners shell
