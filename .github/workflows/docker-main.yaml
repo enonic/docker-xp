@@ -28,10 +28,13 @@ jobs:
         with:
           env-file: .env
 
+      - name: Test env variable
+        run: echo "XP_VERSION = ${{ env.XP_VERSION }}"
+
       # If snapshot version, don't execute this Action
       - name: Exit on snapshot build
         if: contains( env.XP_VERSION, '-SNAPSHOT')
-        run: exit 0
+        run: exit 1
 
       # Runs a single command using the runners shell
       - name: Test .env
