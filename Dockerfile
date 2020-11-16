@@ -10,7 +10,7 @@ ARG build_distro_version
 ENV \
   DEBIAN_FRONTEND="noninteractive" \
   DISTRO_VERSION="$build_distro_version" \
-  DISTRO_URL="https://repo.enonic.com/dev/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.zip" \
+  DISTRO_URL="https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.zip" \
   DISTRO_FOLDER="/tmp/server" \
   BIN_FOLDER="/tmp/bin"
 
