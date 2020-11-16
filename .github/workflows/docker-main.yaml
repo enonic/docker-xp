@@ -30,7 +30,7 @@ jobs:
 
       # If snapshot version, don't execute this Action
       - name: Exit on snapshot build
-        if: contains("$XP_VERSION", '-SNAPSHOT')
+        if: [[ $XP_VERSION = *-SNAPSHOT ]]
         run: exit 0
 
       # Runs a single command using the runners shell
