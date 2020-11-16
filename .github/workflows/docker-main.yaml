@@ -28,11 +28,24 @@ jobs:
         with:
           env-file: .env
 
+      # If snapshot version, don't execute this Action
+      - name: Exit on snapshot build
+        if: contains($XP_VERSION, '-SNAPSHOT')
+        run: exit 0
+
       # Runs a single command using the runners shell
       - name: Test .env
-        run: echo "$IMAGE_FULL_TAG"
+        run: echo "Building $IMAGE_FULL_TAG ..."
 
-#      # Runs a set of commands using the runners shell
+      - name: Docker Build
+        run: docker build $DOCKER_BUILD_EXTRA_ARGS \
+          --build-arg build_date=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+          --build-arg build_base_image=$BASE_IMAGE \
+          --build-arg build_distro_version=$XP_VERSION \
+          -t $IMAGE_FULL_TAG \
+          .
+
+          #      # Runs a set of commands using the runners shell
 #      - name: Run a multi-line script
 #        run: |
 #          echo Add other actions to build,
