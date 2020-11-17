@@ -1,0 +1,52 @@
+name: CI
+
+# This workflow should only be executed from branches for each version, but at a later time.
+# At a later time, this must be updated for XP v8.
+on:
+  push:
+    branches:
+      - '7.*'
+    path:
+      - '.env'
+
+# There is one job in this workflow, to build and publish the image.
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: c-py/action-dotenv-to-setenv@v2
+        with:
+          env-file: .env
+
+      - uses: docker/setup-buildx-action@v1
+
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set run date
+        run: echo "BUILD_DATE_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
+      - name: Docker Build
+        if: ${{ ! contains( env.XP_VERSION, '-SNAPSHOT') }}
+        run: docker build ${{ env.DOCKER_BUILD_EXTRA_ARGS }} --build-arg build_date=${{ env.BUILD_DATE_TIME }} --build-arg build_base_image=${{ env.BASE_IMAGE }} --build-arg build_distro_version=${{ env.XP_VERSION }} -t ${{ env.IMAGE_FULL_TAG }} .
+
+      - name: Docker publish
+        if: ${{ ! contains( env.XP_VERSION, '-SNAPSHOT') }}
+        run: |
+          for p in $PUSH_TO
+          do
+            echo "Pushing $p ..."
+            docker tag $IMAGE_FULL_TAG $p
+            docker push $p
+          done
+          
+          
+          
+          
+          
+          
