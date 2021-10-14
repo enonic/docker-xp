@@ -31,22 +31,17 @@ jobs:
       - name: Set run date
         run: echo "BUILD_DATE_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
-      - name: Docker Build
+      - name: Docker build and push
+        uses: docker/build-push-action@v2
         if: ${{ ! contains( env.XP_VERSION, '-SNAPSHOT') }}
-        run: docker build ${{ env.DOCKER_BUILD_EXTRA_ARGS }} --build-arg build_date=${{ env.BUILD_DATE_TIME }} --build-arg build_base_image=${{ env.BASE_IMAGE }} --build-arg build_distro_version=${{ env.XP_VERSION }} -t ${{ env.IMAGE_FULL_TAG }} .
-
-      - name: Docker publish
-        if: ${{ ! contains( env.XP_VERSION, '-SNAPSHOT') }}
-        run: |
-          for p in $PUSH_TO
-          do
-            echo "Pushing $p ..."
-            docker tag $IMAGE_FULL_TAG $p
-            docker push $p
-          done
-          
-          
-          
-          
-          
-          
+        with:
+          context: .
+          pull: true
+          no-cache: true
+          push: true
+          tags: ${{ env.IMAGE_FULL_TAG }}
+          platforms: linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7,linux/armhf
+          build-args: |
+            build_date=${{ env.BUILD_DATE_TIME }}
+            build_base_image=${{ env.BASE_IMAGE }}
+            build_distro_version=${{ env.XP_VERSION }}
