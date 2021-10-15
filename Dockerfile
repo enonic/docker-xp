@@ -10,32 +10,35 @@ ARG build_distro_version
 ENV \
   DEBIAN_FRONTEND="noninteractive" \
   DISTRO_VERSION="$build_distro_version" \
-  DISTRO_URL="https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.zip" \
+  DISTRO_URL="https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.tgz" \
   DISTRO_FOLDER="/tmp/server" \
   BIN_FOLDER="/tmp/bin"
 
 # Get needed build dependencies
 RUN \
   apt-get -qq update && \ 
-  apt-get -qq install -y wget unzip
+  apt-get -qq install -y git build-essential
 
 # Download and unzip XP to ${DISTRO_FOLDER}
 RUN \
-  wget -q $DISTRO_URL && \
-  unzip -qq enonic-xp-generic-$DISTRO_VERSION.zip && \
+  curl $DISTRO_URL | tar -xz && \
   mv $(find . -maxdepth 1 -type d -name 'enonic-xp-generic-*') ${DISTRO_FOLDER}
 
 # Create standard folders so docker will preserve
 # folder permissions when mounting named volumes
 ENV CREATE_DIRS="config,data,deploy,logs,repo/blob,repo/index,snapshots,work"
 RUN bash -c "mkdir -p ${DISTRO_FOLDER}/home/{$CREATE_DIRS}"
+RUN mkdir ${BIN_FOLDER}
 
-# Add jattach to do heap and thread dumps
-ENV JATTACH_VERSION=v1.5
+# Compile jattach to do heap and thread dumps
+ENV JATTACH_VERSION=v2.0
 RUN \
-  mkdir ${BIN_FOLDER} && \
-  wget -q https://github.com/apangin/jattach/releases/download/${JATTACH_VERSION}/jattach -O ${BIN_FOLDER}/jattach && \
-  chmod +x ${BIN_FOLDER}/jattach
+  git clone https://github.com/apangin/jattach.git /tmp/jattach && \
+  cd /tmp/jattach && \
+  git checkout ${JATTACH_VERSION} && \
+  make all && \
+  chmod +x /tmp/jattach/build/jattach && \
+  cp /tmp/jattach/build/jattach ${BIN_FOLDER}/jattach
 
 # Copy in scripts to bin folder
 COPY bin/* ${BIN_FOLDER}/
@@ -85,18 +88,18 @@ LABEL \
   org.label-schema.license="GPL-3.0" \
   org.label-schema.name="Enonic XP" \
   org.label-schema.schema-version="1.0" \
-  org.label-schema.url="https://enonic.com/products/enonic-xp" \
+  org.label-schema.url="https://enonic.com/platform" \
   org.label-schema.usage="https://developer.enonic.com/" \
   org.label-schema.vcs-url="https://github.com/enonic/xp" \
   org.label-schema.vendor="Enonic" \
   org.label-schema.version="${XP_DISTRO_VERSION}" \
   org.opencontainers.image.created="${build_date}" \
-  org.opencontainers.image.authors="Jørgen Sivesind (jsi@enonic.com), Diego Pasten (dap@enonic.com), Guðmundur Björn Birkisson (gbi@enonic.com)" \
+  org.opencontainers.image.authors="Jørgen Sivesind (jsi@enonic.com), Guðmundur Björn Birkisson (gbi@enonic.com)" \
   org.opencontainers.image.documentation="https://developer.enonic.com/" \
   org.opencontainers.image.licenses="GPL-3.0" \
   org.opencontainers.image.source="https://github.com/enonic/xp" \
   org.opencontainers.image.title="Enonic XP" \
-  org.opencontainers.image.url="https://enonic.com/products/enonic-xp" \
+  org.opencontainers.image.url="https://enonic.com/platform" \
   org.opencontainers.image.vendor="Enonic" \
   org.opencontainers.image.version="${XP_DISTRO_VERSION}"
 

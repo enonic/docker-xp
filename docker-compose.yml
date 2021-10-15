@@ -31,7 +31,7 @@ services:
       - snapshots:/enonic-xp/home/snapshots
       - work:/enonic-xp/home/work
       #- ./mounts/data:/enonic-xp/home/data
-      - ./mounts/config:/enonic-xp/home/config:ro
+      #- ./mounts/config:/enonic-xp/home/config:ro
     user: "1000"
     labels:
       io.enonic.backup.prescripts: "/usr/local/bin/backup.sh"
