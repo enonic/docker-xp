@@ -1,6 +1,6 @@
 # This is a make file to test out multi-arch docker builds. This has only been tested on linux!
 
-BUILD_PLATFORMS:=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7,linux/armhf
+BUILD_PLATFORMS:=linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7
 
 .DEFAULT_GOAL:= help
 .PHONY:="docker-builder-prepare docker-builder-create docker-build-test help"
