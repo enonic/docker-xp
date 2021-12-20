@@ -3,7 +3,7 @@ FROM enonic/java8
 
 MAINTAINER Jørgen Sivesind (jsi@enonic.com)
 
-ENV XP_DISTRO_VERSION 6.15.13-RC1
+ENV XP_DISTRO_VERSION 6.15.13
 ENV XP_ROOT /enonic-xp
 ENV XP_HOME /enonic-xp/home
 ENV XP_USER enonic-xp
