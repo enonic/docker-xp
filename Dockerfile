@@ -16,7 +16,8 @@ ENV \
 
 # Get needed build dependencies
 RUN \
-  apt-get -qq update && \ 
+  apt-get -qq update && \
+  apt-get -qq upgrade && \
   apt-get -qq install -y git build-essential
 
 # Download and unzip XP to ${DISTRO_FOLDER}
@@ -117,6 +118,7 @@ RUN \
   chmod g=u /etc/passwd && \
   # Install required packages
   apt-get -qq update && \
+  apt-get -qq upgrade && \
   apt-get -qq install -y \
     dnsutils \
   # Cleanup after apt-get
