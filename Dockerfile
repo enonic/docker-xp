@@ -3,7 +3,7 @@
 ################################################################################
 
 ARG build_base_image
-FROM $build_base_image as builder
+FROM ubuntu:21.04 as builder
 
 # Set builder environment
 ARG build_distro_version
@@ -16,8 +16,9 @@ ENV \
 
 # Get needed build dependencies
 RUN \
-  apt-get -qq update && \ 
-  apt-get -qq install -y git build-essential
+  apt-get -qq update && \
+  apt-get -qq upgrade && \
+  apt-get -qq install -y git build-essential curl
 
 # Download and unzip XP to ${DISTRO_FOLDER}
 RUN \
@@ -117,6 +118,7 @@ RUN \
   chmod g=u /etc/passwd && \
   # Install required packages
   apt-get -qq update && \
+  apt-get -qq upgrade && \
   apt-get -qq install -y \
     dnsutils \
   # Cleanup after apt-get

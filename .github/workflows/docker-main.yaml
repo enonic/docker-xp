@@ -1,13 +1,10 @@
 name: CI
 
-# This workflow should only be executed from branches for each version, but at a later time.
-# At a later time, this must be updated for XP v8.
+# This workflow should only be executed when version tag is pushed.
 on:
   push:
-    branches:
-      - '7.*'
-    path:
-      - '.env'
+    tags:
+      - 'v*'
 
 # There is one job in this workflow, to build and publish the image.
 jobs:
