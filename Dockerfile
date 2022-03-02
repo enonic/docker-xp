@@ -1,29 +1,55 @@
 ################################################################################
-# Build stage 0 `builder`:
+# Build stage 1 `downloader`:
+#
+# This stage was added because building linux/arm64 images under qemu resulted
+# in segmentation faults while downloading artifacts.
 ################################################################################
 
 ARG build_base_image
-FROM ubuntu:21.04 as builder
+FROM alpine as downloader
+
+# Set downloader environment
+ARG build_distro_version
+ARG build_jattach_version
+ENV \
+  XP_VERSION="$build_distro_version" \
+  JATTACH_VERSION="$build_jattach_version"
+WORKDIR /tmp
+
+# Download and unzip XP
+ARG build_distro_version
+RUN wget -O- "https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$XP_VERSION/enonic-xp-generic-$XP_VERSION.tgz" | tar -xz && \
+    mv /tmp/enonic-xp-generic-${XP_VERSION} /tmp/xp
+
+# Download and unzip jattach source
+RUN wget -O- "https://github.com/apangin/jattach/archive/refs/tags/v${JATTACH_VERSION}.tar.gz" | tar -xz && \
+    mv /tmp/jattach-${JATTACH_VERSION} /tmp/jattach
+
+################################################################################
+# Build stage 2 `builder`:
+#
+# Here we compile jattach, add folders missing from the distro and
+# set permissions.
+################################################################################
+ARG build_base_image
+FROM $build_base_image as builder
 
 # Set builder environment
 ARG build_distro_version
 ENV \
-  DEBIAN_FRONTEND="noninteractive" \
-  DISTRO_VERSION="$build_distro_version" \
-  DISTRO_URL="https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.tgz" \
-  DISTRO_FOLDER="/tmp/server" \
+  DISTRO_FOLDER="/tmp/xp" \
+  JATTACH_FOLDER="/tmp/jattach" \
   BIN_FOLDER="/tmp/bin"
 
 # Get needed build dependencies
 RUN \
+  DEBIAN_FRONTEND="noninteractive" \
   apt-get -qq update && \
   apt-get -qq upgrade && \
-  apt-get -qq install -y git build-essential curl
+  apt-get -qq install -y build-essential
 
-# Download and unzip XP to ${DISTRO_FOLDER}
-RUN \
-  curl $DISTRO_URL | tar -xz && \
-  mv $(find . -maxdepth 1 -type d -name 'enonic-xp-generic-*') ${DISTRO_FOLDER}
+# Copy in downloaded files
+COPY --from=downloader /tmp /tmp
 
 # Create standard folders so docker will preserve
 # folder permissions when mounting named volumes
@@ -32,14 +58,11 @@ RUN bash -c "mkdir -p ${DISTRO_FOLDER}/home/{$CREATE_DIRS}"
 RUN mkdir ${BIN_FOLDER}
 
 # Compile jattach to do heap and thread dumps
-ENV JATTACH_VERSION=v2.0
 RUN \
-  git clone https://github.com/apangin/jattach.git /tmp/jattach && \
-  cd /tmp/jattach && \
-  git checkout ${JATTACH_VERSION} && \
+  cd ${JATTACH_FOLDER} && \
   make all && \
-  chmod +x /tmp/jattach/build/jattach && \
-  cp /tmp/jattach/build/jattach ${BIN_FOLDER}/jattach
+  chmod +x ${JATTACH_FOLDER}/build/jattach && \
+  cp ${JATTACH_FOLDER}/build/jattach ${BIN_FOLDER}/jattach
 
 # Copy in scripts to bin folder
 COPY bin/* ${BIN_FOLDER}/
@@ -59,7 +82,7 @@ RUN \
   cp -R /etc/skel/. ${DISTRO_FOLDER}/
 
 ################################################################################
-# Build stage 1 (the actual XP image):
+# Build stage 3 (the actual XP image):
 ################################################################################
 
 ARG build_base_image
@@ -117,6 +140,7 @@ RUN \
   # Allow entrypoint to create associated entry in /etc/passwd.
   chmod g=u /etc/passwd && \
   # Install required packages
+  DEBIAN_FRONTEND="noninteractive" \
   apt-get -qq update && \
   apt-get -qq upgrade && \
   apt-get -qq install -y \
@@ -125,7 +149,7 @@ RUN \
   && rm -rf /var/lib/apt/lists/*
 
 # Copy in XP and scripts
-COPY --from=builder --chown=$XP_UID:0 /tmp/server $XP_ROOT
+COPY --from=builder --chown=$XP_UID:0 /tmp/xp $XP_ROOT
 COPY --from=builder --chown=$XP_UID:0 /tmp/bin /usr/local/bin
 
 # Set working directory and export ports
