@@ -47,3 +47,4 @@ jobs:
             build_date=${{ env.BUILD_DATE_TIME }}
             build_base_image=${{ env.BASE_IMAGE }}
             build_distro_version=${{ env.XP_VERSION }}
+            build_jattach_version=${{ env.JATTACH_VERSION }}
