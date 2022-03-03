@@ -7,6 +7,7 @@ services:
         build_date: ""
         build_base_image: $BASE_IMAGE
         build_distro_version: $XP_VERSION
+        build_jattach_version: $JATTACH_VERSION
     restart: always
     deploy:
       resources:
