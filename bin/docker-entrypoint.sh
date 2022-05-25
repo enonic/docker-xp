@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script is the entrypoint for the docker image. By default it steps down from
 # root when running the XP server.
