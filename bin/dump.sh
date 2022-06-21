@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script creates thread and heap dumps from the JVM to the $XP_HOME/data folder.
 #

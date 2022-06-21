@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script exits with code 0 if there are a snapshot that is newer
 # than AGE minutes. If AGE is not provided, it default to the environmental
