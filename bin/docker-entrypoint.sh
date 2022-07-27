@@ -36,7 +36,6 @@ setup_xp_home_directory() {
 	# Is there a custom setenv.sh ?
 	if [[ -f $XP_HOME/setenv.sh ]]; then
 		echo "Found custom setenv.sh file in XP_HOME folder, copying it into runtime..."
-		rm -f $XP_ROOT/bin/setenv.sh
 		cp -p $XP_HOME/setenv.sh $XP_ROOT/bin/setenv.sh
 	fi
 }
