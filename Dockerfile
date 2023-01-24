@@ -21,6 +21,14 @@ ARG build_distro_version
 RUN wget -O- "https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$XP_VERSION/enonic-xp-generic-$XP_VERSION.tgz" | tar -xz && \
     mv /tmp/enonic-xp-generic-${XP_VERSION} /tmp/xp
 
+# old JNA library doesn't support the arrch64 platform, but the current elasticsearch version needs it. Fortunately, it's not essential and can be removed.
+RUN set -eux; \
+    dpkgArch=`uname -m`; \
+    echo `uname -m`; \
+    if [ "$dpkgArch" = "aarch64" ]; then \
+      rm -f /tmp/xp/lib/jna-4.1.0.jar; \
+    fi;
+
 # Download and unzip jattach source
 RUN wget -O- "https://github.com/apangin/jattach/archive/refs/tags/v${JATTACH_VERSION}.tar.gz" | tar -xz && \
     mv /tmp/jattach-${JATTACH_VERSION} /tmp/jattach
