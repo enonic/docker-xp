@@ -10,15 +10,17 @@ FROM alpine as downloader
 
 # Set downloader environment
 ARG build_distro_version
+ARG build_distro_path
 ARG build_jattach_version
 ENV \
   XP_VERSION="$build_distro_version" \
+  XP_DISTRO_PATH=${build_distro_path:-"https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.tgz"} \
   JATTACH_VERSION="$build_jattach_version"
 WORKDIR /tmp
 
 # Download and unzip XP
 ARG build_distro_version
-RUN wget -O- "https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$XP_VERSION/enonic-xp-generic-$XP_VERSION.tgz" | tar -xz && \
+RUN wget -O- "$XP_DISTRO_PATH" | tar -xz && \
     mv /tmp/enonic-xp-generic-${XP_VERSION} /tmp/xp
 
 # old JNA library doesn't support the arrch64 platform, but the current elasticsearch version needs it. Fortunately, it's not essential and can be removed.
