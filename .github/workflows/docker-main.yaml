@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Push to Docker Hub
-        default: false
+        description: Push to Docker Hub Repository
+        default: 'enonic/xp-experimental'
 
 # There is one job in this workflow, to build and publish the image.
 jobs:
@@ -44,12 +44,11 @@ jobs:
           context: .
           pull: true
           no-cache: true
-          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish == 'true' }}
-          tags: ${{ env.IMAGE_FULL_TAG }}
+          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish != '' }}
+          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp' }}:${{ env.XP_VERSION }}-ubuntu
           platforms: linux/amd64,linux/arm64
           build-args: |
             build_date=${{ env.BUILD_DATE_TIME }}
             build_base_image=${{ env.BASE_IMAGE }}
             build_distro_version=${{ env.XP_VERSION }}
             build_distro_path=${{ env.XP_DISTRO_PATH }}
-            build_jattach_version=${{ env.JATTACH_VERSION }}
