@@ -10,16 +10,17 @@ FROM alpine as downloader
 
 # Set downloader environment
 ARG build_distro_version
-ARG build_jattach_version
+ARG build_distro_path
 ENV \
   XP_VERSION="$build_distro_version" \
-  JATTACH_VERSION="$build_jattach_version"
+  XP_DISTRO_PATH=${build_distro_path:-"https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$build_distro_version/enonic-xp-generic-$build_distro_version.tgz"}
 WORKDIR /tmp
 
 # Download and unzip XP
 ARG build_distro_version
-RUN wget -O- "https://repo.enonic.com/public/com/enonic/xp/enonic-xp-generic/$XP_VERSION/enonic-xp-generic-$XP_VERSION.tgz" | tar -xz && \
-    mv /tmp/enonic-xp-generic-${XP_VERSION} /tmp/xp
+RUN mkdir --parents /tmp/xp; \
+    cd /tmp/xp; \
+    wget -O- "$XP_DISTRO_PATH" | tar --strip-components=1 -xz
 
 # old JNA library doesn't support the arrch64 platform, but the current elasticsearch version needs it. Fortunately, it's not essential and can be removed.
 RUN set -eux; \
@@ -30,8 +31,9 @@ RUN set -eux; \
     fi;
 
 # Download and unzip jattach source
-RUN wget -O- "https://github.com/apangin/jattach/archive/refs/tags/v${JATTACH_VERSION}.tar.gz" | tar -xz && \
-    mv /tmp/jattach-${JATTACH_VERSION} /tmp/jattach
+RUN mkdir --parents /tmp/jattach; \
+    cd /tmp/jattach; \
+    wget -O- "https://github.com/apangin/jattach/archive/refs/tags/v2.1.tar.gz" | tar --strip-components=1 -xz
 
 ################################################################################
 # Build stage 2 `builder`:

@@ -8,8 +8,8 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Push to Docker Hub
-        default: false
+        description: Push to Docker Hub Repository
+        default: 'enonic/xp-experimental'
 
 # There is one job in this workflow, to build and publish the image.
 jobs:
@@ -28,9 +28,9 @@ jobs:
           image: tonistiigi/binfmt:qemu-v6.2.0
           platforms: all
 
-      - uses: docker/setup-buildx-action@v1
+      - uses: docker/setup-buildx-action@v2
 
-      - uses: docker/login-action@v1
+      - uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -39,17 +39,16 @@ jobs:
         run: echo "BUILD_DATE_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
       - name: Docker build and push
-        uses: docker/build-push-action@v2
-        if: ${{ ! contains( env.XP_VERSION, '-SNAPSHOT') }}
+        uses: docker/build-push-action@v4
         with:
           context: .
           pull: true
           no-cache: true
-          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish == 'true' }}
-          tags: ${{ env.IMAGE_FULL_TAG }}
+          push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish != '' }}
+          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp' }}:${{ env.XP_VERSION }}-ubuntu
           platforms: linux/amd64,linux/arm64
           build-args: |
             build_date=${{ env.BUILD_DATE_TIME }}
             build_base_image=${{ env.BASE_IMAGE }}
             build_distro_version=${{ env.XP_VERSION }}
-            build_jattach_version=${{ env.JATTACH_VERSION }}
+            build_distro_path=${{ env.XP_DISTRO_PATH }}
