@@ -2,9 +2,8 @@ name: CI
 
 # This workflow should only be executed when version tag is pushed.
 on:
-  push:
-    tags:
-      - 'v*'
+  schedule:
+    - cron: '5 4 * * *'
   workflow_dispatch:
     inputs:
       publish:
@@ -34,6 +33,17 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get Distro Path
+        run: |
+          XP_VERSION="${{ env.XP_VERSION }}"
+          BASE_URL="https://repo.enonic.com/repository/snapshot/com/enonic/xp/enonic-xp-generic/$XP_VERSION"
+
+          METADATA=$(curl -s "$BASE_URL/maven-metadata.xml")
+          VALUE=$(echo "$METADATA" | grep -oPm1 "(?<=<value>)[^<]+")
+          ARTIFACT_ID=$(echo "$METADATA" | grep -oPm1 "(?<=<artifactId>)[^<]+")
+
+          echo "XP_DISTRO_PATH=$BASE_URL/$ARTIFACT_ID-$VALUE.tgz" >> $GITHUB_ENV
 
       - name: Set run date
         run: echo "BUILD_DATE_TIME=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
