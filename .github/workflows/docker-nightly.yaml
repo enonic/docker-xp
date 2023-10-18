@@ -1,4 +1,4 @@
-name: CI
+name: Nightly
 
 # This workflow should only be executed when version tag is pushed.
 on:
