@@ -55,7 +55,7 @@ jobs:
           pull: true
           no-cache: true
           push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish != '' }}
-          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp' }}:${{ env.XP_VERSION }}-ubuntu
+          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp' }}:nightly
           platforms: linux/amd64,linux/arm64
           build-args: |
             build_date=${{ env.BUILD_DATE_TIME }}
