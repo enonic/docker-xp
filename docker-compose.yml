@@ -1,4 +1,3 @@
-version: "3"
 services:
   exp:
     build:
@@ -33,7 +32,7 @@ services:
       - work:/enonic-xp/home/work
       #- ./mounts/data:/enonic-xp/home/data
       #- ./mounts/config:/enonic-xp/home/config:ro
-    user: "1000"
+    user: "1337"
     labels:
       io.enonic.backup.prescripts: "/usr/local/bin/backup.sh"
 volumes:
