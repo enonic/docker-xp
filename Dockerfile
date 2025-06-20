@@ -72,8 +72,6 @@ RUN \
     DEBIAN_FRONTEND="noninteractive" \
       apt-get update && \
       apt-get install -y --no-install-recommends \
-          curl \
-          ca-certificates \
           locales \
           jattach \
       && apt-get clean && \
