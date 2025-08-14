@@ -106,8 +106,8 @@ RUN \
 # folder permissions when mounting named volumes
 RUN CREATE_DIRS="config,data,deploy,logs,repo/blob,repo/index,snapshots,work" && \
     for dir in $(echo $CREATE_DIRS | tr ',' ' '); do \
-        mkdir -vp ${XP_HOME}/$dir && \
-        chown -v $XP_UID:0 ${XP_HOME}/$dir; \
+        mkdir --parents ${XP_HOME}/$dir && \
+        chown $XP_UID:0 ${XP_HOME}/$dir; \
     done
 
 # Set working directory and export ports
