@@ -75,6 +75,7 @@ RUN \
           locales \
           jattach \
           curl \
+          ca-certificates \
       && apt-get clean && \
       rm -rf /var/lib/apt/lists/* && \
       locale-gen en_US.UTF-8 && \
