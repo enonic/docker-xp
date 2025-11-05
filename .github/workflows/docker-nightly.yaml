@@ -1,6 +1,5 @@
 name: Nightly
 
-# This workflow should only be executed when version tag is pushed.
 on:
   schedule:
     - cron: '5 4 * * *'
@@ -8,7 +7,7 @@ on:
     inputs:
       publish:
         description: Push to Docker Hub Repository
-        default: 'enonic/xp-experimental'
+        default: 'enonic/xp-experimental:nightly'
 
 # There is one job in this workflow, to build and publish the image.
 jobs:
@@ -52,7 +51,7 @@ jobs:
           pull: true
           no-cache: true
           push: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish != '' }}
-          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp' }}:nightly
+          tags: ${{ github.event.inputs.publish != '' && github.event.inputs.publish || 'enonic/xp:nightly' }}
           platforms: linux/amd64,linux/arm64
           build-args: |
             build_date=${{ env.BUILD_DATE_TIME }}
