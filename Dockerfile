@@ -44,6 +44,7 @@ ENV \
   XP_USER="enonic-xp" \
   XP_UID="1337"
 ENV PATH=$PATH:$XP_ROOT/bin
+ENV XDG_CACHE_HOME=$XP_HOME/work
 
 # Set labels
 ARG build_date
@@ -94,6 +95,7 @@ RUN \
   echo "export XP_HOME=$XP_HOME" >> /etc/environment && \
   echo "export XP_USER=$XP_USER" >> /etc/environment && \
   echo "export XP_UID=$XP_UID" >> /etc/environment && \
+  echo "export XDG_CACHE_HOME=$XP_HOME/work" >> /etc/environment && \
   # Create user
   useradd --home-dir "$XP_ROOT" --no-create-home --uid "$XP_UID" --gid 0 --shell /usr/sbin/nologin "$XP_USER" && \
   # UID running the container could be generated dynamically by Openstack.
