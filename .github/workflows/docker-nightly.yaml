@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 7.16
 
       - uses: c-py/action-dotenv-to-setenv@v2
         with:
