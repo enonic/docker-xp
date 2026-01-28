@@ -8,6 +8,11 @@ on:
       publish:
         description: Push to Docker Hub Repository
         default: 'enonic/xp-experimental:nightly'
+  workflow_call:
+    inputs:
+      publish:
+        type: string
+        required: true
 
 # There is one job in this workflow, to build and publish the image.
 jobs:
