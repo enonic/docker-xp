@@ -10,4 +10,4 @@ jobs:
     uses: enonic/docker-xp/.github/workflows/docker-nightly.yaml@7.16
     secrets: inherit
     with:
-      publish: 'enonic/xp-experimental:nightly-7.x'
+      publish: 'enonic/xp:nightly-7.x'
