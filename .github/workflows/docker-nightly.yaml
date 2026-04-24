@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: 8.0
 
       - uses: c-py/action-dotenv-to-setenv@v2
         with:
@@ -56,7 +58,7 @@ jobs:
           pull: true
           no-cache: true
           push: ${{ inputs.publish != '' }}
-          tags: ${{ inputs.publish || 'enonic/xp:nightly' }}
+          tags: ${{ inputs.publish || 'enonic/xp:nightly-8.x' }}
           platforms: linux/amd64,linux/arm64
           build-args: |
             build_date=${{ env.BUILD_DATE_TIME }}
