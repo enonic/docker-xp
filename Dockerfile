@@ -82,6 +82,10 @@ RUN \
       locale-gen en_US.UTF-8 && \
       update-locale LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
 
+ENV LANG=en_US.UTF-8 \
+    LANGUAGE=en_US:en \
+    LC_ALL=en_US.UTF-8
+
 # Copy in XP and scripts
 # Openshift overrides USER and uses ones with randomly uid>1024 and gid=0.
 # Allow ENTRYPOINT (and XP) to run even with a different user. So we change
