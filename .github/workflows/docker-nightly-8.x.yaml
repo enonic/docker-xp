@@ -1,0 +1,13 @@
+name: Nightly 8.x
+
+on:
+  schedule:
+    - cron: '5 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    uses: enonic/docker-xp/.github/workflows/docker-nightly.yaml@8.0
+    secrets: inherit
+    with:
+      publish: 'enonic/xp:nightly-8.x'
