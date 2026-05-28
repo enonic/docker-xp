@@ -1,8 +1,6 @@
 name: Nightly
 
 on:
-  schedule:
-    - cron: '5 4 * * *'
   workflow_dispatch:
     inputs:
       publish:
