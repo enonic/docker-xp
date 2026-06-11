@@ -21,14 +21,6 @@ RUN mkdir --parents /tmp/xp; \
     cd /tmp/xp; \
     wget -O- "$XP_DISTRO_PATH" | tar --strip-components=1 -xz
 
-# old JNA library doesn't support the arrch64 platform, but the current elasticsearch version needs it. Fortunately, it's not essential and can be removed.
-RUN set -eux; \
-    dpkgArch=`uname -m`; \
-    echo `uname -m`; \
-    if [ "$dpkgArch" = "aarch64" ]; then \
-      rm -f /tmp/xp/lib/jna-4.1.0.jar; \
-    fi;
-
 ################################################################################
 # Build stage 2 (the actual XP image):
 ################################################################################
