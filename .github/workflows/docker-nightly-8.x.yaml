@@ -7,7 +7,7 @@ on:
 
 jobs:
   nightly:
-    uses: enonic/docker-xp/.github/workflows/docker-nightly.yaml@8.0
+    uses: enonic/docker-xp/.github/workflows/docker-nightly.yaml@8.1
     secrets: inherit
     with:
       publish: 'enonic/xp:nightly-8.x'
